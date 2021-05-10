@@ -58,9 +58,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		index++
 	}
 	sort.Strings(headers)
-	servInfo := fmt.Sprintf("  Hostname: %s\n  Address:  %s", hostname, r.Host)
+	servInfo := fmt.Sprintf("  Hostname: %s", hostname)
 	reqInfo := fmt.Sprintf("  Client:   %s\n  URL:      %s", r.RemoteAddr, r.URL)
-	headerInfo := ""
+	headerInfo := fmt.Sprintf("  Host: %s\n", r.Host)
 	for _, key := range headers {
 		headerInfo += fmt.Sprintf("  %s: %s\n", key, r.Header[key][0])
 	}
@@ -94,7 +94,6 @@ func oneGbDownloadHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Method: %s, URL: %s", r.Method, r.URL.EscapedPath())
 	//w.Header().Set("Content-Type", "application/octet-stream")
 	w.Header().Set("Content-Disposition", "attachment;filename=\"dummy\"")
-	w.Write([]byte("hello"))
 	dummyFile := "/tmp/1g"
 	_, err := os.Stat(dummyFile)
 	if os.IsNotExist(err) {
