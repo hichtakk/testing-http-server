@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -59,14 +60,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Strings(headers)
 	servInfo := fmt.Sprintf("  Hostname: %s", hostname)
-	reqInfo := fmt.Sprintf("  Client:   %s\n  URL:      %s", r.RemoteAddr, r.URL)
+	reqInfo := fmt.Sprintf("  Client:   %s\n  Method:   %s\n  URL:      %s\n  Protocol: %s", r.RemoteAddr, r.Method, r.URL, r.Proto)
 	headerInfo := fmt.Sprintf("  Host: %s\n", r.Host)
 	for _, key := range headers {
 		headerInfo += fmt.Sprintf("  %s: %s\n", key, r.Header[key][0])
 	}
-	log.Printf("Client: %s, Method: %s, URL: %s, Duration: %s", r.RemoteAddr, r.Method, r.URL.EscapedPath(), time.Since(start))
-	log.Printf("Request Headers:\n%s", headerInfo)
-	w.Write([]byte(fmt.Sprintf(responseHTML, hostname, servInfo, reqInfo, headerInfo)))
+	if ua := r.UserAgent(); strings.HasPrefix(ua, "Mozilla") != true {
+		responseHTML = "  [Server]\n%s\n\n  [Request]\n%s\n\n  [Header]\n%s"
+		w.Write([]byte(fmt.Sprintf(responseHTML, servInfo, reqInfo, headerInfo)))
+	} else {
+		w.Write([]byte(fmt.Sprintf(responseHTML, hostname, servInfo, reqInfo, headerInfo)))
+	}
+	//fmt.Printf("%+v\n", r)
+	log.Printf("Client: %s, Method: %s, URL: %s, Version: %s, Duration: %s\n Request Headers:\n%s", r.RemoteAddr, r.Proto, r.Method, r.URL.EscapedPath(), time.Since(start), headerInfo)
 }
 
 func downloadHandler(w http.ResponseWriter, r *http.Request) {
