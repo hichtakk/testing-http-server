@@ -60,7 +60,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Strings(headers)
 	servInfo := fmt.Sprintf("  Hostname: %s", hostname)
-	reqInfo := fmt.Sprintf("  Client:   %s\n  Method:   %s\n  URL:      %s\n  Protocol: %s", r.RemoteAddr, r.Method, r.URL, r.Proto)
+	reqInfo := fmt.Sprintf("  Client:   %s\n  Protocol: %s\n  Method:   %s\n  URL:      %s", r.RemoteAddr, r.Proto, r.Method, r.URL)
 	headerInfo := fmt.Sprintf("  Host: %s\n", r.Host)
 	for _, key := range headers {
 		headerInfo += fmt.Sprintf("  %s: %s\n", key, r.Header[key][0])
