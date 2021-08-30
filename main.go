@@ -71,8 +71,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.Write([]byte(fmt.Sprintf(responseHTML, hostname, servInfo, reqInfo, headerInfo)))
 	}
-	//fmt.Printf("%+v\n", r)
-	log.Printf("Client: %s, Method: %s, URL: %s, Version: %s, Duration: %s\n Request Headers:\n%s", r.RemoteAddr, r.Proto, r.Method, r.URL.EscapedPath(), time.Since(start), headerInfo)
+	log.Printf("Client: %s, Protocol: %s, Method: %s, URL: %s, Duration: %s\n Request Headers:\n%s", r.RemoteAddr, r.Proto, r.Method, r.URL.EscapedPath(), time.Since(start), headerInfo)
 }
 
 func downloadHandler(w http.ResponseWriter, r *http.Request) {
